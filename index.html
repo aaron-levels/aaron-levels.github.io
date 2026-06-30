@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     <title>Aaron Mathias - Cloud Engineer</title>
     <style>
@@ -11,5 +11,76 @@
     <h1>Aaron Mathias</h1>
     <p>Cloud & Network Engineering | AWS Track @ WGU</p>
     <p>GitHub: <a href="https://github.com/aaron-levels">aaron-levels</a></p>
+</body>
+
+
+<!-- Temp Age Display (pending formatting) -->
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Current Age</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .age-container {
+            text-align: center;
+            display: inline-block;
+        }
+
+        .age-label {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+            font-weight: 500;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .age-display {
+            font-size: 24px;
+            font-weight: 700;
+            color: #333;
+            font-variant-numeric: tabular-nums;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body>
+    <div class="age-container">
+        <div class="age-label">Current Age</div>
+        <div class="age-display" id="ageDisplay">Loading...</div>
+    </div>
+
+    <script>
+        const birthDate = new Date('2000-10-26T00:00:00Z');
+
+        function updateAge() {
+            const now = new Date();
+            
+            // Calculate the time difference in milliseconds
+            const timeDiff = now - birthDate;
+            
+            // Convert to years (accounting for leap years)
+            const millisPerYear = 365.25 * 24 * 60 * 60 * 1000;
+            const ageInYears = timeDiff / millisPerYear;
+            
+            // Format to 9 decimal places
+            const ageFormatted = ageInYears.toFixed(9);
+            
+            document.getElementById('ageDisplay').textContent = ageFormatted;
+        }
+
+        // Initial update
+        updateAge();
+
+        // Update every 100ms for smooth animation (you can adjust this)
+        setInterval(updateAge, 100);
+    </script>
 </body>
 </html>

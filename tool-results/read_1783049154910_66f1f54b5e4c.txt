@@ -1,0 +1,935 @@
+     1→"use client";
+     2→
+     3→import { motion } from "framer-motion";
+     4→import {
+     5→  ArrowRight,
+     6→  ExternalLink,
+     7→  Github,
+     8→  Globe,
+     9→  Mail,
+    10→  Phone,
+    11→  Cloud,
+    12→  Server,
+    13→  ShieldCheck,
+    14→  Activity,
+    15→  Network,
+    16→  Code2,
+    17→  Boxes,
+    18→  Terminal,
+    19→  GraduationCap,
+    20→  Award,
+    21→  Briefcase,
+    22→  MapPin,
+    23→  Calendar,
+    24→  Cpu,
+    25→  Wrench,
+    26→} from "lucide-react";
+    27→import { Navbar } from "@/components/site/navbar";
+    28→import { Footer } from "@/components/site/footer";
+    29→
+    30→/* ----------------------------- Data ----------------------------- */
+    31→
+    32→const CONTACT = {
+    33→  name: "Aaron Mathias",
+    34→  role: "Cloud & Network Engineering",
+    35→  phone: "647-468-5392",
+    36→  phoneHref: "tel:+16474685392",
+    37→  email: "amat576@wgu.edu",
+    38→  website: "aaronmathias.me",
+    39→  websiteHref: "https://aaronmathias.me",
+    40→  github: "github.com/aaron-levels",
+    41→  githubHref: "https://github.com/aaron-levels",
+    42→  location: "Toronto, ON",
+    43→};
+    44→
+    45→const STATS = [
+    46→  { value: "3+", label: "Years experience" },
+    47→  { value: ">98%", label: "Uptime maintained" },
+    48→  { value: "3,500", label: "Endpoints managed" },
+    49→  { value: "$1M+", label: "Annual savings" },
+    50→];
+    51→
+    52→type ProjectLink = {
+    53→  label: string;
+    54→  href: string;
+    55→  variant: "code" | "demo";
+    56→};
+    57→
+    58→type FeaturedProject = {
+    59→  id: string;
+    60→  number: string;
+    61→  title: string;
+    62→  description: string;
+    63→  tags: string[];
+    64→  links?: ProjectLink[];
+    65→  icon: React.ComponentType<{ size?: number; className?: string }>;
+    66→  status?: "progress" | "live";
+    67→};
+    68→
+    69→type OtherProject = {
+    70→  id: string;
+    71→  title: string;
+    72→  description: string;
+    73→  tags: string[];
+    74→  icon: React.ComponentType<{ size?: number; className?: string }>;
+    75→};
+    76→
+    77→const FEATURED: FeaturedProject[] = [
+    78→  {
+    79→    id: "subnet-calc",
+    80→    number: "01",
+    81→    title: "Python Subnet Calculator CLI",
+    82→    description:
+    83→      "A command-line tool that takes any IP address and subnet mask and instantly calculates network address, broadcast address, usable host range, and total host count. Includes a binary breakdown of the subnet mask, VLSM support, and structured JSON output for piping into other scripts.",
+    84→    tags: ["Python", "ipaddress", "argparse", "VLSM", "JSON", "Networking"],
+    85→    links: [
+    86→      { label: "View Code", href: "https://github.com/aaron-levels", variant: "code" },
+    87→    ],
+    88→    icon: Terminal,
+    89→    status: "live",
+    90→  },
+    91→  {
+    92→    id: "vpc-lab",
+    93→    number: "02",
+    94→    title: "AWS VPC Build Lab",
+    95→    description:
+    96→      "Hands-on AWS networking lab focused on VPC design, subnet planning, security groups, NACLs, routing, and CLI-driven configuration across EC2, S3, and IAM.",
+    97→    tags: ["AWS", "VPC", "Subnets", "Security Groups", "AWS CLI"],
+    98→    icon: Cloud,
+    99→    status: "progress",
+   100→  },
+   101→  {
+   102→    id: "portfolio",
+   103→    number: "03",
+   104→    title: "Cloud Engineering Portfolio",
+   105→    description:
+   106→      "A dark editorial portfolio site built with Next.js and deployed on Netlify to present cloud, networking, infrastructure, and support experience.",
+   107→    tags: ["Next.js", "React", "Tailwind CSS", "Netlify", "TypeScript"],
+   108→    links: [
+   109→      { label: "View Code", href: "https://github.com/aaron-levels", variant: "code" },
+   110→      { label: "Live Demo", href: "https://aaronmathias.me", variant: "demo" },
+   111→    ],
+   112→    icon: Code2,
+   113→    status: "live",
+   114→  },
+   115→];
+   116→
+   117→const OTHER_WORK: OtherProject[] = [
+   118→  {
+   119→    id: "cloudwatch-lab",
+   120→    title: "CloudWatch Monitoring Lab",
+   121→    description:
+   122→      "Infrastructure monitoring practice using Amazon CloudWatch to capture metrics, alarms, and operational visibility for AWS resources.",
+   123→    tags: ["AWS", "CloudWatch", "Monitoring", "Alarms"],
+   124→    icon: Activity,
+   125→  },
+   126→  {
+   127→    id: "iam-lab",
+   128→    title: "IAM Security Lab",
+   129→    description:
+   130→      "AWS identity and access management practice covering IAM users, roles, policies, JSON policy structure, and least-privilege access design.",
+   131→    tags: ["AWS", "IAM", "Security", "JSON Policies"],
+   132→    icon: ShieldCheck,
+   133→  },
+   134→  {
+   135→    id: "net-automation",
+   136→    title: "Network Automation Scripts",
+   137→    description:
+   138→      "Reusable Python and Bash scripts for configuring switches, validating routes, and automating repetitive network operations tasks.",
+   139→    tags: ["Python", "Bash", "Automation", "Networking"],
+   140→    icon: Network,
+   141→  },
+   142→  {
+   143→    id: "terraform-infra",
+   144→    title: "Terraform Infrastructure",
+   145→    description:
+   146→      "Modular Terraform configurations provisioning repeatable AWS environments — VPCs, IAM, and compute — with remote state and plan/apply pipelines.",
+   147→    tags: ["Terraform", "IaC", "AWS", "Modules"],
+   148→    icon: Boxes,
+   149→  },
+   150→];
+   151→
+   152→type Job = {
+   153→  id: string;
+   154→  role: string;
+   155→  company: string;
+   156→  location: string;
+   157→  period: string;
+   158→  bullets: string[];
+   159→};
+   160→
+   161→const EXPERIENCE: Job[] = [
+   162→  {
+   163→    id: "bmo-analyst",
+   164→    role: "ATM Technical Support Analyst",
+   165→    company: "Bank of Montreal (BMO)",
+   166→    location: "Toronto, ON",
+   167→    period: "Jun 2023 – Present",
+   168→    bullets: [
+   169→      "Negotiated and managed SLAs with NCR, Burroughs, Chubb, and Securitas; restructured dispatch workflows and vendor contracts to deliver $1M+ in annualized cost savings while maintaining infrastructure availability targets.",
+   170→      "Maintained >98% uptime across ~3,500 ATMs (Canada & U.S.) by triaging hardware, software, and Layer 1–3 network faults; escalated incidents through ITSM workflows using Vision, PaymentsOne, and Data Navigator.",
+   171→      "Configured TCP/IP parameters, IP addressing schemes, and network connectivity during ATM installations and decommissions across hundreds of sites; documented all changes in ServiceNow per ITSM change management protocols.",
+   172→      "Developed and automated daily statistical incident reports using structured data from monitoring tools, improving proactive alerting coverage and reducing repeat-incident rates fleet-wide.",
+   173→      "Led infrastructure migration coordination for the Canadian ATM Refresh Project — a nationwide hardware refresh spanning hundreds of locations — managing vendor logistics, site scheduling, and rollout validation end-to-end.",
+   174→    ],
+   175→  },
+   176→  {
+   177→    id: "bmo-rep",
+   178→    role: "Customer & Financial Services Representative",
+   179→    company: "Bank of Montreal (BMO)",
+   180→    location: "Toronto, ON",
+   181→    period: "Sep 2021 – Jun 2023",
+   182→    bullets: [
+   183→      "Processed high-volume financial transactions with zero end-of-day reconciliation errors over 22 months; maintained full AML/KYC and cybersecurity policy compliance.",
+   184→      "Advised customers on digital banking platforms, reducing branch call volume and driving measurable improvement in digital adoption rates.",
+   185→    ],
+   186→  },
+   187→];
+   188→
+   189→type SkillGroup = {
+   190→  id: string;
+   191→  label: string;
+   192→  icon: React.ComponentType<{ size?: number; className?: string }>;
+   193→  items: string[];
+   194→};
+   195→
+   196→const SKILL_GROUPS: SkillGroup[] = [
+   197→  {
+   198→    id: "aws",
+   199→    label: "AWS & Cloud",
+   200→    icon: Cloud,
+   201→    items: [
+   202→      "EC2",
+   203→      "S3",
+   204→      "IAM",
+   205→      "VPC",
+   206→      "Security Groups",
+   207→      "NACLs",
+   208→      "Route 53",
+   209→      "CloudWatch",
+   210→      "JSON Policies",
+   211→      "Static Website Hosting",
+   212→      "AWS CLI",
+   213→      "IAM Roles & Policies",
+   214→    ],
+   215→  },
+   216→  {
+   217→    id: "networking",
+   218→    label: "Networking",
+   219→    icon: Network,
+   220→    items: [
+   221→      "TCP/IP",
+   222→      "DNS",
+   223→      "DHCP",
+   224→      "VLANs",
+   225→      "Subnetting",
+   226→      "VLSM",
+   227→      "CIDR notation",
+   228→      "OSI model (L1–L7)",
+   229→      "Incident response",
+   230→      "Access management",
+   231→      "Threat detection",
+   232→      "Firewall rule management",
+   233→    ],
+   234→  },
+   235→  {
+   236→    id: "os",
+   237→    label: "OS / Scripting",
+   238→    icon: Cpu,
+   239→    items: [
+   240→      "Linux (CLI, Bash scripting)",
+   241→      "Python",
+   242→      "Windows Server",
+   243→      "Active Directory basics",
+   244→      "Remote Desktop (RDP)",
+   245→      "SSH",
+   246→    ],
+   247→  },
+   248→  {
+   249→    id: "tools",
+   250→    label: "Tools",
+   251→    icon: Wrench,
+   252→    items: [
+   253→      "ServiceNow (ITSM/change mgmt)",
+   254→      "FIS PaymentsOne",
+   255→      "FIS Data Navigator",
+   256→      "SIEM",
+   257→      "Git/GitHub",
+   258→      "VS Code",
+   259→    ],
+   260→  },
+   261→];
+   262→
+   263→type Cert = {
+   264→  name: string;
+   265→  status: "earned" | "progress";
+   266→  detail: string;
+   267→};
+   268→
+   269→const CERTS: Cert[] = [
+   270→  { name: "CompTIA A+", status: "earned", detail: "Earned Jun 2026" },
+   271→  { name: "CompTIA Network+", status: "progress", detail: "In Progress" },
+   272→  { name: "AWS Cloud Practitioner", status: "progress", detail: "In Progress" },
+   273→];
+   274→
+   275→/* --------------------------- Animations -------------------------- */
+   276→
+   277→const fadeUp = {
+   278→  hidden: { opacity: 0, y: 16 },
+   279→  visible: (i: number) => ({
+   280→    opacity: 1,
+   281→    y: 0,
+   282→    transition: { duration: 0.5, delay: i * 0.08, ease: [0.22, 1, 0.36, 1] as const },
+   283→  }),
+   284→};
+   285→
+   286→/* --------------------------- Sub-components -------------------------- */
+   287→
+   288→function Badge({ children }: { children: React.ReactNode }) {
+   289→  return (
+   290→    <span className="inline-flex items-center justify-center rounded-md border border-transparent px-2 py-0.5 font-medium text-xs bg-secondary/60 text-secondary-foreground">
+   291→      {children}
+   292→    </span>
+   293→  );
+   294→}
+   295→
+   296→function SectionLabel({ children }: { children: React.ReactNode }) {
+   297→  return (
+   298→    <h2 className="text-xs font-semibold text-primary uppercase tracking-widest mb-8">
+   299→      {children}
+   300→    </h2>
+   301→  );
+   302→}
+   303→
+   304→function FeaturedCard({
+   305→  project,
+   306→  index,
+   307→}: {
+   308→  project: FeaturedProject;
+   309→  index: number;
+   310→}) {
+   311→  const Icon = project.icon;
+   312→  return (
+   313→    <motion.div
+   314→      custom={index}
+   315→      variants={fadeUp}
+   316→      initial="hidden"
+   317→      whileInView="visible"
+   318→      viewport={{ once: true, margin: "-80px" }}
+   319→      className="group bg-card border border-border rounded-2xl p-8 card-hover"
+   320→    >
+   321→      <div className="flex flex-col md:flex-row md:items-start gap-6">
+   322→        <div className="hidden md:flex items-center justify-center w-12 h-12 rounded-xl bg-primary/10 border border-primary/20 shrink-0">
+   323→          <Icon size={20} className="text-primary" />
+   324→        </div>
+   325→        <div className="flex-1">
+   326→          <div className="flex items-center gap-3 mb-2 flex-wrap">
+   327→            <h3 className="text-xl font-bold text-foreground">{project.title}</h3>
+   328→            {project.status === "progress" && (
+   329→              <span className="inline-flex items-center gap-1.5 text-xs text-muted-foreground/80">
+   330→                <span className="w-1.5 h-1.5 rounded-full bg-primary/70 animate-pulse" />
+   331→                In progress
+   332→              </span>
+   333→            )}
+   334→          </div>
+   335→          <p className="text-muted-foreground leading-relaxed mb-5 max-w-2xl">
+   336→            {project.description}
+   337→          </p>
+   338→          <div className="flex flex-wrap gap-2 mb-6">
+   339→            {project.tags.map((tag) => (
+   340→              <Badge key={tag}>{tag}</Badge>
+   341→            ))}
+   342→          </div>
+   343→          {project.links && project.links.length > 0 && (
+   344→            <div className="flex flex-wrap gap-4">
+   345→              {project.links.map((link) =>
+   346→                link.variant === "code" ? (
+   347→                  <a
+   348→                    key={link.label}
+   349→                    href={link.href}
+   350→                    target="_blank"
+   351→                    rel="noopener noreferrer"
+   352→                    className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground transition-colors"
+   353→                  >
+   354→                    <Github size={15} />
+   355→                    {link.label}
+   356→                  </a>
+   357→                ) : (
+   358→                  <a
+   359→                    key={link.label}
+   360→                    href={link.href}
+   361→                    target={link.href.startsWith("http") ? "_blank" : undefined}
+   362→                    rel="noopener noreferrer"
+   363→                    className="inline-flex items-center gap-2 text-sm text-primary hover:text-primary/80 transition-colors font-medium"
+   364→                  >
+   365→                    <ExternalLink size={15} />
+   366→                    {link.label}
+   367→                    <ArrowRight
+   368→                      size={13}
+   369→                      className="group-hover:translate-x-0.5 transition-transform"
+   370→                    />
+   371→                  </a>
+   372→                )
+   373→              )}
+   374→            </div>
+   375→          )}
+   376→        </div>
+   377→      </div>
+   378→    </motion.div>
+   379→  );
+   380→}
+   381→
+   382→function OtherCard({
+   383→  project,
+   384→  index,
+   385→}: {
+   386→  project: OtherProject;
+   387→  index: number;
+   388→}) {
+   389→  const Icon = project.icon;
+   390→  return (
+   391→    <motion.div
+   392→      custom={index}
+   393→      variants={fadeUp}
+   394→      initial="hidden"
+   395→      whileInView="visible"
+   396→      viewport={{ once: true, margin: "-60px" }}
+   397→      className="group bg-card border border-border rounded-2xl p-6 card-hover flex flex-col"
+   398→    >
+   399→      <div className="flex items-center gap-3 mb-4">
+   400→        <div className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 border border-primary/20">
+   401→          <Icon size={16} className="text-primary" />
+   402→        </div>
+   403→        <h3 className="text-lg font-bold text-foreground">{project.title}</h3>
+   404→      </div>
+   405→      <div className="flex-1">
+   406→        <p className="text-sm text-muted-foreground leading-relaxed mb-5">
+   407→          {project.description}
+   408→        </p>
+   409→      </div>
+   410→      <div className="flex flex-wrap gap-1.5 mb-5">
+   411→        {project.tags.map((tag) => (
+   412→          <Badge key={tag}>{tag}</Badge>
+   413→        ))}
+   414→      </div>
+   415→      <div className="flex items-center gap-2 text-xs text-muted-foreground/70 pt-1">
+   416→        <Terminal size={12} />
+   417→        Lab notes &amp; write-up
+   418→      </div>
+   419→    </motion.div>
+   420→  );
+   421→}
+   422→
+   423→function ExperienceCard({ job, index }: { job: Job; index: number }) {
+   424→  return (
+   425→    <motion.div
+   426→      custom={index}
+   427→      variants={fadeUp}
+   428→      initial="hidden"
+   429→      whileInView="visible"
+   430→      viewport={{ once: true, margin: "-60px" }}
+   431→      className="group bg-card border border-border rounded-2xl p-8 card-hover"
+   432→    >
+   433→      <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2 mb-5">
+   434→        <div>
+   435→          <h3 className="text-lg font-bold text-foreground">{job.role}</h3>
+   436→          <p className="text-sm text-primary font-medium mt-0.5">
+   437→            {job.company}
+   438→          </p>
+   439→        </div>
+   440→        <div className="flex flex-col md:items-end gap-1 text-xs text-muted-foreground shrink-0">
+   441→          <span className="inline-flex items-center gap-1.5">
+   442→            <Calendar size={12} />
+   443→            {job.period}
+   444→          </span>
+   445→          <span className="inline-flex items-center gap-1.5">
+   446→            <MapPin size={12} />
+   447→            {job.location}
+   448→          </span>
+   449→        </div>
+   450→      </div>
+   451→      <ul className="space-y-3">
+   452→        {job.bullets.map((b, i) => (
+   453→          <li
+   454→            key={i}
+   455→            className="text-sm text-muted-foreground leading-relaxed flex gap-3"
+   456→          >
+   457→            <span
+   458→              className="mt-2 w-1.5 h-1.5 rounded-full bg-primary/60 shrink-0"
+   459→              aria-hidden="true"
+   460→            />
+   461→            <span>{b}</span>
+   462→          </li>
+   463→        ))}
+   464→      </ul>
+   465→    </motion.div>
+   466→  );
+   467→}
+   468→
+   469→function SkillGroupCard({
+   470→  group,
+   471→  index,
+   472→}: {
+   473→  group: SkillGroup;
+   474→  index: number;
+   475→}) {
+   476→  const Icon = group.icon;
+   477→  return (
+   478→    <motion.div
+   479→      custom={index}
+   480→      variants={fadeUp}
+   481→      initial="hidden"
+   482→      whileInView="visible"
+   483→      viewport={{ once: true, margin: "-60px" }}
+   484→      className="bg-card border border-border rounded-2xl p-6 card-hover"
+   485→    >
+   486→      <div className="flex items-center gap-3 mb-4">
+   487→        <div className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 border border-primary/20">
+   488→          <Icon size={16} className="text-primary" />
+   489→        </div>
+   490→        <h3 className="text-base font-bold text-foreground">{group.label}</h3>
+   491→      </div>
+   492→      <div className="flex flex-wrap gap-1.5">
+   493→        {group.items.map((item) => (
+   494→          <Badge key={item}>{item}</Badge>
+   495→        ))}
+   496→      </div>
+   497→    </motion.div>
+   498→  );
+   499→}
+   500→
+   501→/* ------------------------------ Page ------------------------------ */
+   502→
+   503→export default function Home() {
+   504→  return (
+   505→    <>
+   506→      <Navbar />
+   507→      <main id="top" className="pt-16 flex-1 flex flex-col">
+   508→        {/* Hero */}
+   509→        <section className="relative overflow-hidden">
+   510→          <div
+   511→            aria-hidden="true"
+   512→            className="pointer-events-none absolute -top-32 left-1/2 -translate-x-1/2 w-[40rem] h-[40rem] rounded-full blur-3xl opacity-20"
+   513→            style={{
+   514→              background:
+   515→                "radial-gradient(circle, oklch(0.72 0.19 295) 0%, transparent 60%)",
+   516→            }}
+   517→          />
+   518→          <div className="max-w-6xl mx-auto px-6 py-20 md:py-28 relative">
+   519→            <motion.div
+   520→              initial={{ opacity: 0, y: 16 }}
+   521→              animate={{ opacity: 1, y: 0 }}
+   522→              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+   523→            >
+   524→              <p className="text-primary text-xs font-medium tracking-widest uppercase mb-4">
+   525→                {CONTACT.role}
+   526→              </p>
+   527→              <h1 className="text-5xl md:text-7xl font-black text-foreground tracking-tight mb-6 leading-[1.05]">
+   528→                Aaron Mathias<span className="text-primary">.</span>
+   529→              </h1>
+   530→              <p className="text-muted-foreground max-w-2xl leading-relaxed text-base md:text-lg mb-8">
+   531→                Cloud/Network Engineering professional with 3+ years managing
+   532→                mission-critical infrastructure at scale — configuring TCP/IP
+   533→                networks, enforcing IAM security, and maintaining &gt;98% uptime
+   534→                across 3,500 endpoints in a production financial environment.
+   535→              </p>
+   536→              <div className="flex flex-wrap items-center gap-3">
+   537→                <a
+   538→                  href="#projects"
+   539→                  className="inline-flex items-center gap-2 px-6 py-3 gradient-violet text-white rounded-full font-medium text-sm hover:opacity-90 transition-all group"
+   540→                >
+   541→                  View Projects
+   542→                  <ArrowRight
+   543→                    size={15}
+   544→                    className="group-hover:translate-x-0.5 transition-transform"
+   545→                  />
+   546→                </a>
+   547→                <a
+   548→                  href="#contact"
+   549→                  className="inline-flex items-center gap-2 px-6 py-3 border border-border rounded-full font-medium text-sm text-foreground hover:bg-muted/50 transition-colors"
+   550→                >
+   551→                  Get in touch
+   552→                </a>
+   553→              </div>
+   554→            </motion.div>
+   555→
+   556→            {/* Stats */}
+   557→            <motion.div
+   558→              initial={{ opacity: 0, y: 16 }}
+   559→              animate={{ opacity: 1, y: 0 }}
+   560→              transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+   561→              className="mt-14 grid grid-cols-2 md:grid-cols-4 gap-4"
+   562→            >
+   563→              {STATS.map((s) => (
+   564→                <div
+   565→                  key={s.label}
+   566→                  className="bg-card border border-border rounded-2xl p-5"
+   567→                >
+   568→                  <p className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
+   569→                    {s.value}
+   570→                  </p>
+   571→                  <p className="text-xs text-muted-foreground mt-1">{s.label}</p>
+   572→                </div>
+   573→              ))}
+   574→            </motion.div>
+   575→          </div>
+   576→        </section>
+   577→
+   578→        {/* About */}
+   579→        <section id="about" className="scroll-mt-20 border-t border-border">
+   580→          <div className="max-w-6xl mx-auto px-6 py-20 grid md:grid-cols-2 gap-12 items-start">
+   581→            <motion.div
+   582→              initial={{ opacity: 0, y: 16 }}
+   583→              whileInView={{ opacity: 1, y: 0 }}
+   584→              viewport={{ once: true, margin: "-80px" }}
+   585→              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+   586→            >
+   587→              <p className="text-primary text-xs font-medium tracking-widest uppercase mb-3">
+   588→                About
+   589→              </p>
+   590→              <h2 className="text-3xl md:text-4xl font-black text-foreground tracking-tight mb-4">
+   591→                Cloud &amp; network engineering, with an operational mindset
+   592→                <span className="text-primary">.</span>
+   593→              </h2>
+   594→            </motion.div>
+   595→            <motion.div
+   596→              initial={{ opacity: 0, y: 16 }}
+   597→              whileInView={{ opacity: 1, y: 0 }}
+   598→              viewport={{ once: true, margin: "-80px" }}
+   599→              transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+   600→              className="space-y-4 text-muted-foreground leading-relaxed"
+   601→            >
+   602→              <p>
+   603→                Results-driven Cloud/Network Engineering professional with 3+
+   604→                years managing mission-critical infrastructure at scale. Proven
+   605→                ability to configure and troubleshoot TCP/IP networks, enforce
+   606→                IAM security policies, and maintain &gt;98% uptime across 3,500
+   607→                endpoints in a production financial environment.
+   608→              </p>
+   609→              <p>
+   610→                Hands-on AWS experience spanning EC2, S3, IAM, VPC, Security
+   611→                Groups, and the AWS CLI — with $1M+ delivered in annualized cost
+   612→                savings through infrastructure optimization. Currently completing
+   613→                a BS in Cloud and Network Engineering (AWS Track) at WGU;
+   614→                CompTIA A+ certified, with Network+ and AWS Cloud Practitioner
+   615→                in progress.
+   616→              </p>
+   617→              <div className="flex flex-wrap gap-2 pt-2">
+   618→                {[
+   619→                  "AWS",
+   620→                  "Networking",
+   621→                  "TCP/IP",
+   622→                  "IAM Security",
+   623→                  "Monitoring",
+   624→                  "Incident Response",
+   625→                ].map((t) => (
+   626→                  <Badge key={t}>{t}</Badge>
+   627→                ))}
+   628→              </div>
+   629→            </motion.div>
+   630→          </div>
+   631→        </section>
+   632→
+   633→        {/* Projects */}
+   634→        <section id="projects" className="scroll-mt-20 border-t border-border">
+   635→          <div className="max-w-6xl mx-auto px-6 py-20">
+   636→            <motion.div
+   637→              initial={{ opacity: 0, y: 16 }}
+   638→              animate={{ opacity: 1, y: 0 }}
+   639→              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+   640→              className="mb-16"
+   641→            >
+   642→              <p className="text-primary text-xs font-medium tracking-widest uppercase mb-3">
+   643→                Work
+   644→              </p>
+   645→              <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tight mb-4">
+   646→                Projects<span className="text-primary">.</span>
+   647→              </h2>
+   648→              <p className="text-muted-foreground max-w-xl leading-relaxed">
+   649→                A selection of cloud and infrastructure work, including a
+   650→                production Python networking tool, AWS labs, IAM security
+   651→                practice, and this portfolio build.
+   652→              </p>
+   653→            </motion.div>
+   654→
+   655→            {/* Featured */}
+   656→            <section className="mb-20">
+   657→              <SectionLabel>Featured</SectionLabel>
+   658→              <div className="space-y-5">
+   659→                {FEATURED.map((project, i) => (
+   660→                  <FeaturedCard key={project.id} project={project} index={i} />
+   661→                ))}
+   662→              </div>
+   663→            </section>
+   664→
+   665→            {/* Other Work */}
+   666→            <section>
+   667→              <SectionLabel>Other Work</SectionLabel>
+   668→              <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+   669→                {OTHER_WORK.map((project, i) => (
+   670→                  <OtherCard key={project.id} project={project} index={i} />
+   671→                ))}
+   672→              </div>
+   673→            </section>
+   674→          </div>
+   675→        </section>
+   676→
+   677→        {/* Experience */}
+   678→        <section id="experience" className="scroll-mt-20 border-t border-border">
+   679→          <div className="max-w-6xl mx-auto px-6 py-20">
+   680→            <motion.div
+   681→              initial={{ opacity: 0, y: 16 }}
+   682→              animate={{ opacity: 1, y: 0 }}
+   683→              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+   684→              className="mb-12"
+   685→            >
+   686→              <p className="text-primary text-xs font-medium tracking-widest uppercase mb-3">
+   687→                Experience
+   688→              </p>
+   689→              <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tight mb-4">
+   690→                Where I&apos;ve worked<span className="text-primary">.</span>
+   691→              </h2>
+   692→              <p className="text-muted-foreground max-w-xl leading-relaxed">
+   693→                Three years managing mission-critical ATM infrastructure at one
+   694→                of Canada&apos;s largest banks — owning uptime, vendor SLAs, and
+   695→                nationwide refresh coordination.
+   696→              </p>
+   697→            </motion.div>
+   698→            <div className="space-y-5">
+   699→              {EXPERIENCE.map((job, i) => (
+   700→                <ExperienceCard key={job.id} job={job} index={i} />
+   701→              ))}
+   702→            </div>
+   703→          </div>
+   704→        </section>
+   705→
+   706→        {/* Skills & Education */}
+   707→        <section id="skills" className="scroll-mt-20 border-t border-border">
+   708→          <div className="max-w-6xl mx-auto px-6 py-20">
+   709→            <motion.div
+   710→              initial={{ opacity: 0, y: 16 }}
+   711→              animate={{ opacity: 1, y: 0 }}
+   712→              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+   713→              className="mb-12"
+   714→            >
+   715→              <p className="text-primary text-xs font-medium tracking-widest uppercase mb-3">
+   716→                Skills &amp; Education
+   717→              </p>
+   718→              <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tight mb-4">
+   719→                The toolkit<span className="text-primary">.</span>
+   720→              </h2>
+   721→              <p className="text-muted-foreground max-w-xl leading-relaxed">
+   722→                AWS, networking fundamentals, scripting, and the operational
+   723→                tools that keep production systems running.
+   724→              </p>
+   725→            </motion.div>
+   726→
+   727→            {/* Skill groups */}
+   728→            <div className="grid grid-cols-1 md:grid-cols-2 gap-5 mb-12">
+   729→              {SKILL_GROUPS.map((group, i) => (
+   730→                <SkillGroupCard key={group.id} group={group} index={i} />
+   731→              ))}
+   732→            </div>
+   733→
+   734→            {/* Certifications + Education */}
+   735→            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+   736→              <motion.div
+   737→                initial={{ opacity: 0, y: 16 }}
+   738→                whileInView={{ opacity: 1, y: 0 }}
+   739→                viewport={{ once: true, margin: "-60px" }}
+   740→                transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+   741→                className="bg-card border border-border rounded-2xl p-8 card-hover"
+   742→              >
+   743→                <div className="flex items-center gap-3 mb-5">
+   744→                  <div className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 border border-primary/20">
+   745→                    <Award size={16} className="text-primary" />
+   746→                  </div>
+   747→                  <h3 className="text-base font-bold text-foreground">
+   748→                    Certifications
+   749→                  </h3>
+   750→                </div>
+   751→                <ul className="space-y-3">
+   752→                  {CERTS.map((c) => (
+   753→                    <li
+   754→                      key={c.name}
+   755→                      className="flex items-center justify-between gap-4"
+   756→                    >
+   757→                      <span className="text-sm text-foreground font-medium">
+   758→                        {c.name}
+   759→                      </span>
+   760→                      <span
+   761→                        className={`inline-flex items-center gap-1.5 text-xs ${
+   762→                          c.status === "earned"
+   763→                            ? "text-primary"
+   764→                            : "text-muted-foreground/80"
+   765→                        }`}
+   766→                      >
+   767→                        <span
+   768→                          className={`w-1.5 h-1.5 rounded-full ${
+   769→                            c.status === "earned"
+   770→                              ? "bg-primary"
+   771→                              : "bg-primary/50 animate-pulse"
+   772→                          }`}
+   773→                        />
+   774→                        {c.detail}
+   775→                      </span>
+   776→                    </li>
+   777→                  ))}
+   778→                </ul>
+   779→              </motion.div>
+   780→
+   781→              <motion.div
+   782→                initial={{ opacity: 0, y: 16 }}
+   783→                whileInView={{ opacity: 1, y: 0 }}
+   784→                viewport={{ once: true, margin: "-60px" }}
+   785→                transition={{ duration: 0.5, delay: 0.08, ease: [0.22, 1, 0.36, 1] }}
+   786→                className="bg-card border border-border rounded-2xl p-8 card-hover"
+   787→              >
+   788→                <div className="flex items-center gap-3 mb-5">
+   789→                  <div className="inline-flex items-center justify-center w-9 h-9 rounded-lg bg-primary/10 border border-primary/20">
+   790→                    <GraduationCap size={16} className="text-primary" />
+   791→                  </div>
+   792→                  <h3 className="text-base font-bold text-foreground">
+   793→                    Education
+   794→                  </h3>
+   795→                </div>
+   796→                <div>
+   797→                  <p className="text-sm text-foreground font-bold">
+   798→                    Western Governors University
+   799→                  </p>
+   800→                  <p className="text-sm text-muted-foreground mt-1">
+   801→                    BS Cloud and Network Engineering — AWS Track
+   802→                  </p>
+   803→                  <p className="text-xs text-muted-foreground/80 mt-2 inline-flex items-center gap-1.5">
+   804→                    <Calendar size={12} />
+   805→                    Expected: Dec 2026 · Remote
+   806→                  </p>
+   807→                </div>
+   808→                <div className="mt-5 pt-5 border-t border-border flex items-center gap-2 text-xs text-muted-foreground/80">
+   809→                  <Briefcase size={12} />
+   810→                  Based in {CONTACT.location} · Open to cloud, infrastructure &amp;
+   811→                  production support roles
+   812→                </div>
+   813→              </motion.div>
+   814→            </div>
+   815→          </div>
+   816→        </section>
+   817→
+   818→        {/* Contact */}
+   819→        <section id="contact" className="scroll-mt-20 border-t border-border">
+   820→          <div className="max-w-6xl mx-auto px-6 py-20">
+   821→            <motion.div
+   822→              initial={{ opacity: 0, y: 16 }}
+   823→              whileInView={{ opacity: 1, y: 0 }}
+   824→              viewport={{ once: true, margin: "-80px" }}
+   825→              transition={{ duration: 0.5, ease: [0.22, 1, 0.36, 1] }}
+   826→              className="text-center mb-12"
+   827→            >
+   828→              <p className="text-primary text-xs font-medium tracking-widest uppercase mb-3">
+   829→                Contact
+   830→              </p>
+   831→              <h2 className="text-4xl md:text-5xl font-black text-foreground tracking-tight mb-4">
+   832→                Let&apos;s build something reliable
+   833→                <span className="text-primary">.</span>
+   834→              </h2>
+   835→              <p className="text-muted-foreground max-w-lg mx-auto leading-relaxed">
+   836→                Open to cloud, infrastructure, and production support roles. Drop
+   837→                a line and I&apos;ll get back within a day or two.
+   838→              </p>
+   839→            </motion.div>
+   840→
+   841→            <motion.div
+   842→              initial={{ opacity: 0, y: 16 }}
+   843→              whileInView={{ opacity: 1, y: 0 }}
+   844→              viewport={{ once: true, margin: "-80px" }}
+   845→              transition={{ duration: 0.5, delay: 0.1, ease: [0.22, 1, 0.36, 1] }}
+   846→              className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-2xl mx-auto"
+   847→            >
+   848→              <a
+   849→                href={CONTACT.phoneHref}
+   850→                className="group bg-card border border-border rounded-2xl p-6 card-hover flex items-center gap-4"
+   851→              >
+   852→                <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 shrink-0">
+   853→                  <Phone size={16} className="text-primary" />
+   854→                </div>
+   855→                <div className="min-w-0">
+   856→                  <p className="text-xs text-muted-foreground">Phone</p>
+   857→                  <p className="text-sm text-foreground font-medium truncate">
+   858→                    {CONTACT.phone}
+   859→                  </p>
+   860→                </div>
+   861→              </a>
+   862→              <a
+   863→                href={`mailto:${CONTACT.email}`}
+   864→                className="group bg-card border border-border rounded-2xl p-6 card-hover flex items-center gap-4"
+   865→              >
+   866→                <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 shrink-0">
+   867→                  <Mail size={16} className="text-primary" />
+   868→                </div>
+   869→                <div className="min-w-0">
+   870→                  <p className="text-xs text-muted-foreground">Email</p>
+   871→                  <p className="text-sm text-foreground font-medium truncate">
+   872→                    {CONTACT.email}
+   873→                  </p>
+   874→                </div>
+   875→              </a>
+   876→              <a
+   877→                href={CONTACT.websiteHref}
+   878→                target="_blank"
+   879→                rel="noopener noreferrer"
+   880→                className="group bg-card border border-border rounded-2xl p-6 card-hover flex items-center gap-4"
+   881→              >
+   882→                <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 shrink-0">
+   883→                  <Globe size={16} className="text-primary" />
+   884→                </div>
+   885→                <div className="min-w-0">
+   886→                  <p className="text-xs text-muted-foreground">Website</p>
+   887→                  <p className="text-sm text-foreground font-medium truncate">
+   888→                    {CONTACT.website}
+   889→                  </p>
+   890→                </div>
+   891→              </a>
+   892→              <a
+   893→                href={CONTACT.githubHref}
+   894→                target="_blank"
+   895→                rel="noopener noreferrer"
+   896→                className="group bg-card border border-border rounded-2xl p-6 card-hover flex items-center gap-4"
+   897→              >
+   898→                <div className="inline-flex items-center justify-center w-10 h-10 rounded-lg bg-primary/10 border border-primary/20 shrink-0">
+   899→                  <Github size={16} className="text-primary" />
+   900→                </div>
+   901→                <div className="min-w-0">
+   902→                  <p className="text-xs text-muted-foreground">GitHub</p>
+   903→                  <p className="text-sm text-foreground font-medium truncate">
+   904→                    {CONTACT.github}
+   905→                  </p>
+   906→                </div>
+   907→              </a>
+   908→            </motion.div>
+   909→
+   910→            <motion.div
+   911→              initial={{ opacity: 0, y: 16 }}
+   912→              whileInView={{ opacity: 1, y: 0 }}
+   913→              viewport={{ once: true, margin: "-80px" }}
+   914→              transition={{ duration: 0.5, delay: 0.15, ease: [0.22, 1, 0.36, 1] }}
+   915→              className="mt-12 text-center"
+   916→            >
+   917→              <a
+   918→                href={`mailto:${CONTACT.email}`}
+   919→                className="inline-flex items-center gap-2 px-6 py-3 gradient-violet text-white rounded-full font-medium text-sm hover:opacity-90 transition-all group"
+   920→              >
+   921→                {CONTACT.email}
+   922→                <ArrowRight
+   923→                  size={15}
+   924→                  className="group-hover:translate-x-0.5 transition-transform"
+   925→                />
+   926→              </a>
+   927→            </motion.div>
+   928→          </div>
+   929→        </section>
+   930→      </main>
+   931→      <Footer />
+   932→    </>
+   933→  );
+   934→}
+   935→

@@ -275,7 +275,7 @@ type Cert = {
 
 const CERTS: Cert[] = [
   { name: "CompTIA A+", status: "earned", detail: "Earned Jun 2026" },
-  { name: "CompTIA Network+", status: "progress", detail: "In Progress" },
+  { name: "CompTIA Network+", status: "earned", detail: "Earned Jul 2026" },
   { name: "AWS Cloud Practitioner", status: "progress", detail: "In Progress" },
 ];
 

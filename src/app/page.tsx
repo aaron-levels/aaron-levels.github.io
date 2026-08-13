@@ -277,6 +277,7 @@ const CERTS: Cert[] = [
   { name: "CompTIA A+", status: "earned", detail: "Earned Jun 2026" },
   { name: "CompTIA Network+", status: "earned", detail: "Earned Jul 2026" },
   { name: "AWS Cloud Practitioner", status: "progress", detail: "In Progress" },
+  { name: "Microsoft Azure Administrator", status: "progress", detail: "In Progress" },
 ];
 
 /* --------------------------- Animations -------------------------- */
@@ -877,7 +878,7 @@ export default function Home() {
                   </p>
                   <p className="text-xs text-muted-foreground/80 mt-2 inline-flex items-center gap-1.5">
                     <Calendar size={12} />
-                    Expected: Dec 2026 · Remote
+                    Expected: Dec 2028         · Remote
                   </p>
                 </div>
                 <div className="mt-5 pt-5 border-t border-border flex items-center gap-2 text-xs text-muted-foreground/80">
